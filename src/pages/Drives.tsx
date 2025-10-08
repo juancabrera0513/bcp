@@ -3,18 +3,24 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
-type Pic = { src: string; alt: string; tag: 'school' | 'christmas' | 'team' }
+type Tag = 'school' | 'christmas'
+type Pic = {
+  id: string
+  src: string
+  alt: string
+  tag: Tag
+}
 
 const ALL_PICS: Pic[] = [
-  { src: '/images/christmas-1.jpg', alt: 'Christmas basket 1', tag: 'christmas' },
-  { src: '/images/christmas-2.jpg', alt: 'Christmas basket 2', tag: 'christmas' },
-  { src: '/images/school-1.jpg', alt: 'School drive 1', tag: 'school' },
-  { src: '/images/school-2.jpg', alt: 'School drive 2', tag: 'school' },
-  { src: '/images/school-3.jpg', alt: 'School drive 3', tag: 'school' },
-  { src: '/images/team.jpg',       alt: 'Team gathered',       tag: 'team' },
+  { id: 'christmas1', src: '/images/christmas-1.jpg', alt: 'Christmas basket 1', tag: 'christmas' },
+  { id: 'christmas2', src: '/images/christmas-2.jpg', alt: 'Christmas basket 2', tag: 'christmas' },
+  { id: 'school1',    src: '/images/school-1.jpg',    alt: 'School drive 1',    tag: 'school'    },
+  { id: 'school2',    src: '/images/school-2.jpg',    alt: 'School drive 2',    tag: 'school'    },
+  { id: 'school3',    src: '/images/school-3.jpg',    alt: 'School drive 3',    tag: 'school'    },
+  { id: 'team',       src: '/images/team.jpg',        alt: 'Team gathered',     tag: 'school'    },
 ]
 
-type Filter = 'all' | 'school' | 'christmas'
+type Filter = 'all' | Tag
 
 export default function Drives() {
   const { t } = useTranslation()
@@ -58,24 +64,18 @@ export default function Drives() {
 
   return (
     <section className="container py-12 space-y-10">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-bold text-gold">{t('drives.title')}</h1>
-      </header>
+      <header className="text-center max-w-3xl mx-auto space-y-4">
+  <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gold">
+    {t('drives.title')}
+  </h1>
+  {t('drives.intro') && (
+    <p className="text-neutral/70 text-lg sm:text-xl leading-relaxed font-light">
+      {t('drives.intro')}
+    </p>
+  )}
+  <div className="w-24 h-1 bg-gold/60 mx-auto rounded-full mt-2"></div>
+</header>
 
-      {/* Descripción */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <article id="christmas" className="border rounded-3xl p-6 bg-white shadow-soft border-gold/30">
-          <h2 className="text-xl font-semibold text-gold mb-2">{t('drives.christmas.title')}</h2>
-          <p className="text-neutral/90">{t('drives.christmas.desc')}</p>
-        </article>
-
-        <article id="school" className="border rounded-3xl p-6 bg-white shadow-soft border-gold/30">
-          <h2 className="text-xl font-semibold text-gold mb-2">{t('drives.school.title')}</h2>
-          <p className="text-neutral/90">{t('drives.school.desc')}</p>
-          <p className="text-sm text-neutral/70 mt-2">{t('drives.school.stat')}</p>
-          <div className="text-xs text-neutral/60 mt-1">{t('drives.school.tag2023')}</div>
-        </article>
-      </div>
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-2">
@@ -90,27 +90,47 @@ export default function Drives() {
         </button>
       </div>
 
-      {/* Masonry */}
-      <ul className="masonry mt-2">
+      {/* GALERÍA GRID con aspecto uniforme */}
+      <ul className="gallery-grid">
         {pics.map((g, i) => (
-          <li key={g.src} className="masonry-item">
-            <button
-              onClick={() => openAt(i)}
-              className="thumb transition-transform hover:scale-[1.01]"
-            >
-              <img
-                src={g.src}
-                alt={g.alt}
-                className="w-full h-auto img-smooth"
-                loading="lazy"
-                decoding="async"
-              />
-            </button>
+          <li key={g.src} className="figure-card">
+            <figure>
+              <button onClick={() => openAt(i)} className="block w-full">
+                <div className="media-frame">
+                  <img
+                    src={g.src}
+                    alt={g.alt}
+                    loading="lazy"
+                    decoding="async"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </div>
+              </button>
+
+              {/* Caption por imagen desde i18n (img.<id>.*) */}
+              {t(`img.${g.id}.title`, { defaultValue: '' }) && (
+                <figcaption className="px-4 sm:px-5 pb-5 text-center">
+                  <h3 className="mt-4 text-lg sm:text-xl font-semibold text-neutral">
+                    {t(`img.${g.id}.title`)}
+                  </h3>
+                  {t(`img.${g.id}.p1`, { defaultValue: '' }) && (
+                    <p className="mt-3 text-neutral/90 leading-relaxed">
+                      {t(`img.${g.id}.p1`)}
+                    </p>
+                  )}
+                  {t(`img.${g.id}.p2`, { defaultValue: '' }) && (
+                    <p className="mt-2 text-neutral/90 leading-relaxed">
+                      {t(`img.${g.id}.p2`)}
+                    </p>
+                  )}
+                </figcaption>
+              )}
+            </figure>
           </li>
         ))}
       </ul>
 
-      {/* Lightbox sin layoutId (fade+scale, sin distorsión) */}
+      {/* Lightbox (fade+scale, sin distorsión) */}
       <AnimatePresence>
         {open && pics[idx] && (
           <motion.div
@@ -125,16 +145,13 @@ export default function Drives() {
                 src={pics[idx].src}
                 alt={pics[idx].alt}
                 className="w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
-                initial={reduce ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }}
+                initial={reduce ? { opacity: 1, scale: 1 } : { opacity: 0.98, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1, transition: { duration: 0.18, ease: 'easeOut' } }}
-                exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.12, ease: 'easeIn' } }}
+                exit={{ opacity: 0.98, scale: 0.98, transition: { duration: 0.12, ease: 'easeIn' } }}
               />
-
               <button onClick={() => setOpen(false)} className="absolute -top-10 right-0 text-white/90 hover:text-white text-2xl" aria-label="Close">✕</button>
               <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl" aria-label="Previous">‹</button>
               <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl" aria-label="Next">›</button>
-
-              <div className="mt-3 text-center text-white/90">{pics[idx].alt}</div>
             </div>
           </motion.div>
         )}

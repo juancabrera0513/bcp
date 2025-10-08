@@ -6,16 +6,12 @@ export default {
       colors: {
         gold: "#C59A3D",
         sky: "#7CCAF3",
-        neutral: "#3B3B3B",
-        light: "#F8F8F8",
-      },
-      fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        neutral: "#3B3B3B"
       },
       boxShadow: {
-        soft: "0 4px 14px rgba(0,0,0,0.08)",
-      },
-    },
+        soft: "0 4px 14px rgba(0,0,0,0.08)"
+      }
+    }
   },
-  plugins: [],
+  plugins: []
 }
