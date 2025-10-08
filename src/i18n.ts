@@ -59,7 +59,7 @@ const resources = {
   es: {
     translation: {
       nav: {
-        home: 'Casa',
+        home: 'Inicio',
         drives: 'Campañas',
         contact: 'Contacto',
         language: 'Idioma',
