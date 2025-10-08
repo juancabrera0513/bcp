@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 
 type Pic = { src: string; alt: string; tag: 'school' | 'christmas' | 'team' }
@@ -20,6 +20,7 @@ export default function Drives() {
   const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
+  const reduce = useReducedMotion()
 
   const initialFilter: Filter =
     location.hash === '#school' ? 'school'
@@ -37,6 +38,7 @@ export default function Drives() {
     [filter]
   )
 
+  // Lightbox
   const [open, setOpen] = useState(false)
   const [idx, setIdx] = useState(0)
   const openAt = (i: number) => { setIdx(i); setOpen(true) }
@@ -57,23 +59,25 @@ export default function Drives() {
   return (
     <section className="container py-12 space-y-10">
       <header className="space-y-2">
-        <h1 className="text-3xl font-bold">{t('drives.title')}</h1>
+        <h1 className="text-3xl font-bold text-gold">{t('drives.title')}</h1>
       </header>
 
+      {/* Descripción */}
       <div className="grid md:grid-cols-2 gap-6">
-        <article id="christmas" className="border rounded-3xl p-6 bg-white shadow-soft">
-          <h2 className="text-xl font-semibold mb-2">{t('drives.christmas.title')}</h2>
-          <p className="text-gray-700">{t('drives.christmas.desc')}</p>
+        <article id="christmas" className="border rounded-3xl p-6 bg-white shadow-soft border-gold/30">
+          <h2 className="text-xl font-semibold text-gold mb-2">{t('drives.christmas.title')}</h2>
+          <p className="text-neutral/90">{t('drives.christmas.desc')}</p>
         </article>
 
-        <article id="school" className="border rounded-3xl p-6 bg-white shadow-soft">
-          <h2 className="text-xl font-semibold mb-2">{t('drives.school.title')}</h2>
-          <p className="text-gray-700">{t('drives.school.desc')}</p>
-          <p className="text-sm text-gray-500 mt-2">{t('drives.school.stat')}</p>
-          <div className="text-xs text-gray-500 mt-1">{t('drives.school.tag2023')}</div>
+        <article id="school" className="border rounded-3xl p-6 bg-white shadow-soft border-gold/30">
+          <h2 className="text-xl font-semibold text-gold mb-2">{t('drives.school.title')}</h2>
+          <p className="text-neutral/90">{t('drives.school.desc')}</p>
+          <p className="text-sm text-neutral/70 mt-2">{t('drives.school.stat')}</p>
+          <div className="text-xs text-neutral/60 mt-1">{t('drives.school.tag2023')}</div>
         </article>
       </div>
 
+      {/* Filtros */}
       <div className="flex flex-wrap gap-2">
         <button className={`chip ${filter === 'all' ? 'chip-active' : ''}`} onClick={() => setFilter('all')}>
           {t('galleryFilters.all')}
@@ -86,38 +90,50 @@ export default function Drives() {
         </button>
       </div>
 
+      {/* Masonry */}
       <ul className="masonry mt-2">
         {pics.map((g, i) => (
           <li key={g.src} className="masonry-item">
-            <motion.button
-              layoutId={g.src}
+            <button
               onClick={() => openAt(i)}
-              className="block w-full overflow-hidden rounded-2xl border bg-white shadow-soft"
+              className="thumb transition-transform hover:scale-[1.01]"
             >
-              <img src={g.src} alt={g.alt} className="w-full h-auto object-cover hover:opacity-95 transition" loading="lazy" />
-            </motion.button>
+              <img
+                src={g.src}
+                alt={g.alt}
+                className="w-full h-auto img-smooth"
+                loading="lazy"
+                decoding="async"
+              />
+            </button>
           </li>
         ))}
       </ul>
 
+      {/* Lightbox sin layoutId (fade+scale, sin distorsión) */}
       <AnimatePresence>
         {open && pics[idx] && (
           <motion.div
             className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.15 } }}
+            exit={{ opacity: 0, transition: { duration: 0.12 } }}
             onClick={() => setOpen(false)}
           >
             <div className="relative max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
               <motion.img
-                layoutId={pics[idx].src}
                 src={pics[idx].src}
                 alt={pics[idx].alt}
                 className="w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl"
-                initial={{ borderRadius: 16 }} animate={{ borderRadius: 16 }}
+                initial={reduce ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1, transition: { duration: 0.18, ease: 'easeOut' } }}
+                exit={{ opacity: 0, scale: 0.98, transition: { duration: 0.12, ease: 'easeIn' } }}
               />
-              <button onClick={() => setOpen(false)} className="absolute -top-10 right-0 text-white/90 hover:text-white text-2xl">✕</button>
-              <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl">‹</button>
-              <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl">›</button>
+
+              <button onClick={() => setOpen(false)} className="absolute -top-10 right-0 text-white/90 hover:text-white text-2xl" aria-label="Close">✕</button>
+              <button onClick={prev} className="absolute left-0 top-1/2 -translate-y-1/2 px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl" aria-label="Previous">‹</button>
+              <button onClick={next} className="absolute right-0 top-1/2 -translate-y-1/2 px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl" aria-label="Next">›</button>
+
               <div className="mt-3 text-center text-white/90">{pics[idx].alt}</div>
             </div>
           </motion.div>

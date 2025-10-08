@@ -7,7 +7,7 @@ export default function RouteProgress() {
 
   useEffect(() => {
     NProgress.start()
-    const t = setTimeout(() => NProgress.done(), 250)
+    const t = setTimeout(() => NProgress.done(), 200)
     return () => {
       clearTimeout(t)
       NProgress.done()
