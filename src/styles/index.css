@@ -86,3 +86,11 @@ a { @apply no-underline; }
 @media (min-width: 768px) { .masonry { column-count: 3; } }
 .masonry-item { break-inside: avoid; margin-bottom: 1rem; }
 */
+
+section header h1 {
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: -0.02em;
+}
+section header p {
+  font-family: 'Open Sans', sans-serif;
+}

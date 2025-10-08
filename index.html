@@ -1,12 +1,99 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" dir="ltr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bendecidos Para Bendecir</title>
+  <!-- Charset & Viewport -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Primary SEO -->
+  <title>Fundación Bendecidos Con Propósitos — Bateyes en San Pedro de Macorís</title>
+  <meta name="description" content="Fundación Bendecidos Con Propósitos apoya a comunidades de bateyes en San Pedro de Macorís con campañas anuales: útiles escolares y cestas de alimentos navideñas. ¡Súmate y marca la diferencia hoy!" />
+  <link rel="canonical" href="https://tudominio.com/" />
+
+  <!-- Internationalization (hreflang) -->
+  <!-- Si sirves rutas con ?lng=es/en o prefijos /es /en, actualiza estas URLs -->
+  <link rel="alternate" href="https://tudominio.com/?lng=es" hreflang="es" />
+  <link rel="alternate" href="https://tudominio.com/?lng=en" hreflang="en" />
+  <link rel="alternate" href="https://tudominio.com/" hreflang="x-default" />
+
+  <!-- Indexing -->
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+
+  <!-- Color Scheme & Theme -->
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#C59A3D" />
+  <meta name="msapplication-TileColor" content="#C59A3D" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_ES" />
+  <meta property="og:site_name" content="Fundación Bendecidos Con Propósitos" />
+  <meta property="og:title" content="Fundación Bendecidos Con Propósitos" />
+  <meta property="og:description" content="Apoyamos a comunidades de bateyes con campañas de útiles escolares y cestas navideñas. ¡Únete y marca la diferencia!" />
+  <meta property="og:url" content="https://tudominio.com/" />
+  <meta property="og:image" content="/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fundación Bendecidos Con Propósitos" />
+  <meta name="twitter:description" content="Campañas anuales para apoyar a estudiantes y familias en San Pedro de Macorís." />
+  <meta name="twitter:image" content="/og-image.jpg" />
+
+  <!-- Favicons & PWA (coloca estos archivos en /public) -->
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <!-- Preconnect & Fonts (con fallback rápido) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;500&display=swap"
+  />
+
+  <!-- Basic OG Image Preload (opcional si es liviana) -->
+  <!-- <link rel="preload" as="image" href="/og-image.jpg" imagesrcset="/og-image.jpg 1x" imagesizes="1200px" /> -->
+
+  <!-- Structured Data (Organization/NGO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NGO",
+    "name": "Fundación Bendecidos Con Propósitos",
+    "url": "https://tudominio.com/",
+    "logo": "https://tudominio.com/logo.png",
+    "sameAs": [
+      "https://www.facebook.com/TuPaginaFB",
+      "https://www.instagram.com/TuPerfilIG"
+    ],
+    "foundingLocation": "San Pedro de Macorís, DO",
+    "email": "mailto:BpB.bendecidos@gmail.com",
+    "description": "Iniciativa sin fines de lucro que apoya a comunidades de bateyes a través de campañas anuales de útiles escolares y cestas navideñas."
+  }
+  </script>
+
+  <!-- Preload opcional de tu CSS compilado si quisieras optimizar FCP (Vite ya inyecta) -->
+  <!-- <link rel="preload" as="style" href="/assets/index-<hash>.css" /> -->
 </head>
 <body>
-<div id="root"></div>
-<script type="module" src="/src/main.tsx"></script>
+  <div id="root"></div>
+  <!-- Vite entry -->
+  <script type="module" src="/src/main.tsx"></script>
+
+  <!-- Idioma por defecto (opcional). Si usas i18next, ya manejas idioma en runtime.
+       Puedes inicializar al vuelo si detectas preferencia del navegador. -->
+  <script>
+    // Ejemplo opcional: forzar idioma según navegador si no hay preferencia guardada
+    try {
+      const saved = localStorage.getItem('i18nextLng');
+      if (!saved) {
+        const lang = navigator.language?.startsWith('es') ? 'es' : 'en';
+        localStorage.setItem('i18nextLng', lang);
+      }
+    } catch(e){}
+  </script>
 </body>
 </html>
